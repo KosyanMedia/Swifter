@@ -47,9 +47,9 @@ public extension Swifter {
 						  failure: FailureHandler? = nil) {
         self.postOAuthRequestToken(with: callbackURL, success: { token, response in
             var requestToken = token!
-            
-            NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
-                NotificationCenter.default.removeObserver(self)
+            var observer: NSObjectProtocol!
+            observer = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
+                NotificationCenter.default.removeObserver(observer)
                 let url = notification.userInfo![CallbackNotification.optionsURLKey] as! URL
                 let parameters = url.query!.queryStringParameters
                 requestToken.verifier = parameters["oauth_verifier"]
@@ -85,8 +85,9 @@ public extension Swifter {
 						  failure: FailureHandler? = nil) {
         self.postOAuthRequestToken(with: callbackURL, success: { token, response in
             var requestToken = token!
-            NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
-                NotificationCenter.default.removeObserver(self)
+            var observer: NSObjectProtocol!
+            observer = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
+                NotificationCenter.default.removeObserver(observer)
                 presenting?.presentedViewController?.dismiss(animated: true, completion: nil)
                 let url = notification.userInfo![CallbackNotification.optionsURLKey] as! URL
                 
