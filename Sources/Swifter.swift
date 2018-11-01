@@ -95,6 +95,7 @@ public class Swifter {
     
     internal struct CallbackNotification {
         static let optionsURLKey = "SwifterCallbackNotificationOptionsURLKey"
+        static let shouldCancelKey = "SwifterCallbackNotificationShouldCancelKey"
     }
     
     internal struct DataParameters {

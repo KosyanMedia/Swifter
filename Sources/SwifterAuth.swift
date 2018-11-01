@@ -51,6 +51,14 @@ public extension Swifter {
             
             NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
                 NotificationCenter.default.removeObserver(self)
+
+                if let shouldCancel = notification.userInfo![CallbackNotification.shouldCancelKey] as? Bool, shouldCancel {
+                    let error = SwifterError(message: "Did cancel auth process",
+                                             kind: .didCancelAuthProcess)
+                    failure?(error)
+                    return
+                }
+
                 let url = notification.userInfo![CallbackNotification.optionsURLKey] as! URL
                 let parameters = url.query!.queryStringParameters
                 requestToken.verifier = parameters["oauth_verifier"]
@@ -89,6 +97,14 @@ public extension Swifter {
             self.swifterCallbackToken = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
                 self.swifterCallbackToken = nil
                 presenting?.presentedViewController?.dismiss(animated: true, completion: nil)
+
+                if let shouldCancel = notification.userInfo![CallbackNotification.shouldCancelKey] as? Bool, shouldCancel {
+                    let error = SwifterError(message: "Did cancel auth process",
+                                             kind: .didCancelAuthProcess)
+                    failure?(error)
+                    return
+                }
+
                 let url = notification.userInfo![CallbackNotification.optionsURLKey] as! URL
                 
                 let parameters = url.query!.queryStringParameters
@@ -173,6 +189,11 @@ public extension Swifter {
         }
         
         return true
+    }
+
+    public class func cancelAuthProcess() {
+        let notification = Notification(name: .swifterCallback, object: nil, userInfo: [CallbackNotification.shouldCancelKey: true])
+        NotificationCenter.default.post(notification)
     }
     
     func authorizeAppOnly(success: TokenSuccessHandler?, failure: FailureHandler?) {

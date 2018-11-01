@@ -22,6 +22,7 @@ public struct SwifterError: LocalizedError {
         case noTwitterApp
         case cancelled
         case invalidClient
+        case didCancelAuthProcess
         
         public var description: String {
             switch self {
@@ -47,6 +48,8 @@ public struct SwifterError: LocalizedError {
                 return "cancelled"
             case .invalidClient:
                 return "invalidClient"
+            case .didCancelAuthProcess:
+                return "didCancelAuthProcess"
             }
         }
         
