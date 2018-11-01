@@ -47,9 +47,9 @@ public extension Swifter {
 						  failure: FailureHandler? = nil) {
         self.postOAuthRequestToken(with: callbackURL, success: { token, response in
             var requestToken = token!
-            
-            NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
-                NotificationCenter.default.removeObserver(self)
+            var observer: NSObjectProtocol!
+            observer = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
+                NotificationCenter.default.removeObserver(observer)
 
                 if let shouldCancel = notification.userInfo![CallbackNotification.shouldCancelKey] as? Bool, shouldCancel {
                     let error = SwifterError(message: "Did cancel auth process",
@@ -93,8 +93,9 @@ public extension Swifter {
 						  failure: FailureHandler? = nil) {
         self.postOAuthRequestToken(with: callbackURL, success: { token, response in
             var requestToken = token!
-            self.swifterCallbackToken = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
-                self.swifterCallbackToken = nil
+            var observer: NSObjectProtocol!
+            observer = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
+                NotificationCenter.default.removeObserver(observer)
                 presenting?.presentedViewController?.dismiss(animated: true, completion: nil)
 
                 if let shouldCancel = notification.userInfo![CallbackNotification.shouldCancelKey] as? Bool, shouldCancel {
