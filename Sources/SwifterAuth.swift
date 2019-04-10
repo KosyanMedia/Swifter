@@ -50,7 +50,9 @@ public extension Swifter {
             var requestToken = token!
             var observer: NSObjectProtocol!
             observer = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
-                NotificationCenter.default.removeObserver(observer)
+                if let observer = observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
 
                 if let shouldCancel = notification.userInfo![CallbackNotification.shouldCancelKey] as? Bool, shouldCancel {
                     let error = SwifterError(message: "Did cancel auth process",
@@ -96,7 +98,9 @@ public extension Swifter {
             var requestToken = token!
             var observer: NSObjectProtocol!
             observer = NotificationCenter.default.addObserver(forName: .swifterCallback, object: nil, queue: .main) { notification in
-                NotificationCenter.default.removeObserver(observer)
+                if let observer = observer {
+                    NotificationCenter.default.removeObserver(observer)
+                }
                 presenting?.presentedViewController?.dismiss(animated: true, completion: nil)
 
                 if let shouldCancel = notification.userInfo![CallbackNotification.shouldCancelKey] as? Bool, shouldCancel {
