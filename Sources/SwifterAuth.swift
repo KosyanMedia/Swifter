@@ -196,7 +196,7 @@ public extension Swifter {
         return true
     }
 
-    public class func cancelAuthProcess() {
+    class func cancelAuthProcess() {
         let notification = Notification(name: .swifterCallback, object: nil, userInfo: [CallbackNotification.shouldCancelKey: true])
         NotificationCenter.default.post(notification)
     }
