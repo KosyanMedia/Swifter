@@ -70,10 +70,10 @@ public extension Swifter {
                     success?(accessToken!, response)
                     }, failure: failure)
             }
-			
-			let forceLogin = forceLogin ? "&force_login=true" : ""
-			let query = "oauth/authorize?oauth_token=\(token!.key)\(forceLogin)"
-			let queryUrl = URL(string: query, relativeTo: TwitterURL.oauth.url)!.absoluteURL
+            
+            let forceLogin = forceLogin ? "&force_login=true" : ""
+            let query = "oauth/authorize?oauth_token=\(token!.key)\(forceLogin)"
+            let queryUrl = URL(string: query, relativeTo: TwitterURL.oauth.url)!.absoluteURL
             NSWorkspace.shared.open(queryUrl)
         }, failure: failure)
     }
@@ -113,6 +113,14 @@ public extension Swifter {
                 let url = notification.userInfo![CallbackNotification.optionsURLKey] as! URL
                 
                 let parameters = url.query!.queryStringParameters
+
+                if let denied = parameters["denied"] {
+                    let error = SwifterError(message: "Authorization denied \(denied)",
+                                             kind: .badOAuthResponse)
+                    failure?(error)
+                    return
+                }
+
                 requestToken.verifier = parameters["oauth_verifier"]
                 
                 self.postOAuthAccessToken(with: requestToken, success: { accessToken, response in
@@ -120,11 +128,11 @@ public extension Swifter {
                     success?(accessToken!, response)
                     }, failure: failure)
             }
-			
-			let forceLogin = forceLogin ? "&force_login=true" : ""
-			let query = "oauth/authorize?oauth_token=\(token!.key)\(forceLogin)"
+            
+            let forceLogin = forceLogin ? "&force_login=true" : ""
+            let query = "oauth/authorize?oauth_token=\(token!.key)\(forceLogin)"
             let queryUrl = URL(string: query, relativeTo: TwitterURL.oauth.url)!.absoluteURL
-			
+            
             if let delegate = safariDelegate ?? (presenting as? SFSafariViewControllerDelegate) {
                 let safariView = SFSafariViewController(url: queryUrl)
                 safariView.delegate = delegate
@@ -214,7 +222,7 @@ public extension Swifter {
                     success?(credentialToken, response)
                 } else {
                     let error = SwifterError(message: "Cannot find bearer token in server response",
-											 kind: .invalidAppOnlyBearerToken)
+                                             kind: .invalidAppOnlyBearerToken)
                     failure?(error)
                 }
             } else if case .object = json["errors"] {
@@ -222,7 +230,7 @@ public extension Swifter {
                 failure?(error)
             } else {
                 let error = SwifterError(message: "Cannot find JSON dictionary in response",
-										 kind: .invalidJSONResponse)
+                                         kind: .invalidJSONResponse)
                 failure?(error)
             }
             
@@ -231,7 +239,7 @@ public extension Swifter {
     
     func postOAuth2BearerToken(success: JSONSuccessHandler?, failure: FailureHandler?) {
         let path = "oauth2/token"
-		let parameters = ["grant_type": "client_credentials"]
+        let parameters = ["grant_type": "client_credentials"]
         self.jsonRequest(path: path, baseURL: .oauth, method: .POST, parameters: parameters, success: success, failure: failure)
     }
     
@@ -274,7 +282,7 @@ public extension Swifter {
                 }, failure: failure)
         } else {
             let error = SwifterError(message: "Bad OAuth response received from server",
-									 kind: .badOAuthResponse)
+                                     kind: .badOAuthResponse)
             failure?(error)
         }
     }
