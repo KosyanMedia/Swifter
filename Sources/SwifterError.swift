@@ -19,6 +19,7 @@ public struct SwifterError: LocalizedError {
         case jsonParseError
         case invalidGifData
         case invalidGifResponse
+        case invalidMultipartMediaResponse
         case noTwitterApp
         case cancelled
         case invalidClient
@@ -42,6 +43,8 @@ public struct SwifterError: LocalizedError {
                 return "invalidGifData"
             case .invalidGifResponse:
                 return "invalidGifResponse"
+            case .invalidMultipartMediaResponse:
+                return "invalidMultipartMediaResponse"
             case .noTwitterApp:
                 return "noTwitterApp"
             case .cancelled:
